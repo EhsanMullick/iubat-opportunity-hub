@@ -18,6 +18,7 @@ VALUES
     ('a0000000-0000-0000-0000-000000000006', 'IUBAT Sports Club', 'organizer', true, 'Physical Education'),
     ('a0000000-0000-0000-0000-000000000007', 'IUBAT Business Society', 'organizer', true, 'BBA'),
     ('a0000000-0000-0000-0000-000000000008', 'IUBAT Tourism & Hospitality Club', 'organizer', true, 'CTHM'),
+    ('a0000000-0000-0000-0000-000000000098', 'Ehsan Mullick (Platform Creator)', 'admin', true, 'Lead Architecture'),
     ('a0000000-0000-0000-0000-000000000099', 'Admin Moderator', 'admin', true, 'Administration')
 ON CONFLICT (id) DO NOTHING;
 

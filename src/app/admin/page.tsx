@@ -16,6 +16,9 @@ import {
   Users,
   Award,
   Layers,
+  ShieldCheck,
+  Mail,
+  Phone,
 } from 'lucide-react';
 import { EventItem, EventStatus } from '@/types';
 import { formatEventDateTime, isEventExpired } from '@/lib/utils/date';
@@ -151,6 +154,65 @@ export default function AdminDashboardPage() {
           <span>{cronFeedback}</span>
         </div>
       )}
+
+      {/* Creator & Master Administrator Ownership Card */}
+      <div className="glass-panel rounded-3xl p-6 border-2 border-indigo-200/90 bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 text-white shadow-xl space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center font-black text-xl shadow-lg shrink-0">
+              👑
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-amber-300">
+                  Platform Creator & Master Admin
+                </span>
+                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                  Verified Owner
+                </span>
+              </div>
+              <h2 className="text-xl font-black text-white">Ehsan Mullick</h2>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <a
+              href="mailto:em.uha.36@gmail.com"
+              className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold text-white border border-white/20 flex items-center gap-1.5 transition-all"
+            >
+              <Mail className="w-3.5 h-3.5 text-indigo-300" />
+              <span>em.uha.36@gmail.com</span>
+            </a>
+            <a
+              href="https://wa.me/8801703186195"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1.5 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/50 text-xs font-semibold text-emerald-200 border border-emerald-400/30 flex items-center gap-1.5 transition-all"
+            >
+              <Phone className="w-3.5 h-3.5 text-emerald-400" />
+              <span>01703186195</span>
+            </a>
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 text-xs text-slate-300 space-y-2">
+          <p className="font-bold text-white flex items-center gap-2 text-sm">
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <span>How Creator Admin Access Works After Publishing:</span>
+          </p>
+          <ul className="list-disc list-inside space-y-1 text-slate-300">
+            <li>
+              <strong>Direct URL:</strong> Navigate to <code className="text-indigo-300 bg-white/10 px-1.5 py-0.5 rounded">https://your-domain.vercel.app/admin</code> or click <strong>Admin</strong> in the top navigation bar.
+            </li>
+            <li>
+              <strong>Automatic Master Admin Provisioning:</strong> In the Supabase database triggers, your email (<strong className="text-white">em.uha.36@gmail.com</strong>) is configured to automatically receive the <code className="text-amber-300">admin</code> role and verified organizer status.
+            </li>
+            <li>
+              <strong>Security & Protection:</strong> Row Level Security (RLS) ensures that unauthorized visitors or general students cannot approve/reject events, toggle featured events, or run admin jobs.
+            </li>
+          </ul>
+        </div>
+      </div>
 
       {/* Metrics Row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">

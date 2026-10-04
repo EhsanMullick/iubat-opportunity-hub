@@ -130,9 +130,25 @@ export default function LoginPage() {
           </button>
         </form>
 
+        {/* Quick Creator / Admin Access */}
+        <div className="pt-2">
+          <button
+            type="button"
+            onClick={() => {
+              setEmail('em.uha.36@gmail.com');
+              setPassword('admin-creator-pass');
+              setSuccess('Creator identity detected (Ehsan Mullick)! Redirecting to Admin Console...');
+              setTimeout(() => router.push('/admin'), 900);
+            }}
+            className="w-full py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm"
+          >
+            <span>👑 Creator Quick Access (Ehsan Mullick / em.uha.36@gmail.com)</span>
+          </button>
+        </div>
+
         {/* Fast Demo Mode Notice */}
         <div className="p-3 rounded-xl bg-indigo-50/60 border border-indigo-100 text-[11px] text-indigo-900 leading-normal text-center">
-          💡 <strong>Development & Demo Mode:</strong> Enter any student or organizer email (e.g. <code>student@iubat.edu</code>) and password to immediately experience full student tracking and organizer workflows.
+          💡 <strong>Production & Demo Authentication:</strong> As creator, you can log in with your email <code>em.uha.36@gmail.com</code> to access the full <strong>Admin Console</strong>. Normal students and organizers access the Student Hub and Event Publishing tools.
         </div>
 
         {/* Signup Redirect */}

@@ -190,14 +190,24 @@ FOR EACH ROW EXECUTE FUNCTION public.set_current_timestamp_updated_at();
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO public.profiles (id, display_name, avatar_url, role)
+    INSERT INTO public.profiles (id, display_name, avatar_url, role, organizer_verified)
     VALUES (
         NEW.id,
         COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'display_name', split_part(NEW.email, '@', 1)),
         COALESCE(NEW.raw_user_meta_data->>'avatar_url', ''),
-        COALESCE(NEW.raw_user_meta_data->>'role', 'user')
+        -- Automatically provision platform creator Ehsan Mullick as Master Admin
+        CASE 
+            WHEN LOWER(NEW.email) = 'em.uha.36@gmail.com' THEN 'admin'
+            ELSE COALESCE(NEW.raw_user_meta_data->>'role', 'user')
+        END,
+        CASE 
+            WHEN LOWER(NEW.email) = 'em.uha.36@gmail.com' THEN TRUE
+            ELSE FALSE
+        END
     )
-    ON CONFLICT (id) DO NOTHING;
+    ON CONFLICT (id) DO UPDATE SET
+        role = CASE WHEN LOWER(NEW.email) = 'em.uha.36@gmail.com' THEN 'admin' ELSE profiles.role END,
+        organizer_verified = CASE WHEN LOWER(NEW.email) = 'em.uha.36@gmail.com' THEN TRUE ELSE profiles.organizer_verified END;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
