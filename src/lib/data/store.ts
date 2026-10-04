@@ -62,6 +62,15 @@ export function runEventExpirationJob(): { expiredCount: number; expiredIds: str
   return { expiredCount: count, expiredIds };
 }
 
+export function simulateEventExpiration(eventId: string): { success: boolean; eventTitle: string } | null {
+  const evt = inMemoryEvents.find((e) => e.id === eventId);
+  if (!evt) return null;
+  evt.end_datetime = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+  evt.status = 'expired';
+  evt.updated_at = new Date().toISOString();
+  return { success: true, eventTitle: evt.title };
+}
+
 /**
  * Get eligible upcoming events for public discovery feeds, homepage, explore, map, and categories.
  * STRICT BUSINESS RULE:
@@ -73,7 +82,9 @@ export function getEligibleUpcomingEvents(params: EventFilterParams = {}): {
   events: EventItem[];
   total: number;
 } {
-  // First run runtime check
+  // Authoritative real-time check: Scan and update any event that passed its end date & time
+  runEventExpirationJob();
+
   const now = new Date();
 
   let filtered = inMemoryEvents.filter((evt) => {

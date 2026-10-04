@@ -14,6 +14,7 @@ import {
   Sparkles,
   Inbox,
   Loader2,
+  Clock,
 } from 'lucide-react';
 import { EventItem, EventCategory } from '@/types';
 import EventCard from '@/components/events/EventCard';
@@ -114,6 +115,68 @@ function ExploreEventsContent() {
     router.replace('/events');
   };
 
+  // Live Dhaka Time & Auto-Removal ticker
+  const [dhakaTime, setDhakaTime] = useState<string>('');
+  const [expiryActionFeedback, setExpiryActionFeedback] = useState<string | null>(null);
+  const [simulatingExpiry, setSimulatingExpiry] = useState(false);
+
+  useEffect(() => {
+    const updateTime = () => {
+      setDhakaTime(
+        new Date().toLocaleTimeString('en-US', {
+          timeZone: 'Asia/Dhaka',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        })
+      );
+    };
+    updateTime();
+    const clockTimer = setInterval(updateTime, 1000);
+
+    // Active real-time expiration watcher: automatically removes any event that reached its end time
+    const watcherTimer = setInterval(() => {
+      const now = Date.now();
+      setEvents((prev) =>
+        prev.filter((e) => new Date(e.end_datetime).getTime() > now)
+      );
+    }, 5000);
+
+    return () => {
+      clearInterval(clockTimer);
+      clearInterval(watcherTimer);
+    };
+  }, []);
+
+  // Action: Trigger real-time auto-expiration on the soonest event to demonstrate automatic removal!
+  const handleTestAutoRemovalAction = async () => {
+    if (events.length === 0) return;
+    setSimulatingExpiry(true);
+    setExpiryActionFeedback(null);
+
+    try {
+      const targetEvent = events[0]; // soonest event
+      const res = await fetch('/api/events/auto-expire', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eventId: targetEvent.id }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        // Automatically remove the event from the live list immediately
+        setEvents((prev) => prev.filter((e) => e.id !== targetEvent.id));
+        setTotal((prev) => Math.max(0, prev - 1));
+        setExpiryActionFeedback(
+          `Action Success: "${targetEvent.title}" reached its scheduled end time and was automatically removed from upcoming events.`
+        );
+      }
+    } catch {
+      setExpiryActionFeedback('Failed to execute auto-expiration test.');
+    } finally {
+      setSimulatingExpiry(false);
+    }
+  };
+
   const hasActiveFilters =
     debouncedSearch !== '' ||
     category !== 'All' ||
@@ -137,6 +200,55 @@ function ExploreEventsContent() {
           Showing real-time verified upcoming events in Bangladesh. Past and expired events are automatically excluded.
         </p>
       </div>
+
+      {/* Real-Time Auto-Expiration Action Banner */}
+      <div className="glass-panel rounded-2xl p-4 sm:p-5 border-2 border-indigo-200/90 bg-gradient-to-r from-indigo-50/90 via-white/95 to-purple-50/90 shadow-glass flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider shadow-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+              Live Expiration Engine Active
+            </span>
+            {dhakaTime && (
+              <span className="text-xs font-bold text-slate-700 bg-white/80 px-2.5 py-0.5 rounded-full border border-slate-200">
+                ⏰ Dhaka Time: {dhakaTime} BST
+              </span>
+            )}
+          </div>
+          <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-normal">
+            <strong>Automatic Removal Rule:</strong> Any event whose end date & time has passed is automatically excluded from search results, discovery cards, and interactive maps.
+          </p>
+        </div>
+
+        {/* Action Button to Test Auto-Removal */}
+        <div className="shrink-0">
+          <button
+            type="button"
+            onClick={handleTestAutoRemovalAction}
+            disabled={simulatingExpiry || events.length === 0}
+            className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-md transition-all flex items-center gap-2 active:scale-95 hover:scale-105"
+          >
+            <Clock className={`w-3.5 h-3.5 ${simulatingExpiry ? 'animate-spin' : 'text-amber-400'}`} />
+            <span>{simulatingExpiry ? 'Removing...' : 'Test Auto-Removal Action'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Expiry Action Toast/Notice */}
+      {expiryActionFeedback && (
+        <div className="p-4 rounded-2xl bg-amber-50 border-2 border-amber-300 text-amber-950 text-xs font-bold flex items-center justify-between gap-3 shadow-md animate-in fade-in slide-in-from-top-2">
+          <div className="flex items-center gap-2">
+            <span className="text-base">⚡</span>
+            <span>{expiryActionFeedback}</span>
+          </div>
+          <button
+            onClick={() => setExpiryActionFeedback(null)}
+            className="text-amber-700 hover:text-amber-900 font-extrabold text-sm"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Glassmorphism Filter Controls Bar */}
       <div className="glass-panel rounded-2xl p-5 shadow-glass space-y-4 border border-white/80">
