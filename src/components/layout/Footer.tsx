@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { GraduationCap, Heart, MapPin, Globe, Mail, Phone, ExternalLink } from 'lucide-react';
+import { GraduationCap, Heart, MapPin, Globe, Mail, Phone, ExternalLink, Linkedin } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -148,6 +148,17 @@ export default function Footer() {
           </div>
 
           <div className="flex items-center gap-3 flex-wrap justify-center">
+            {/* LinkedIn Profile Button */}
+            <a
+              href="https://www.linkedin.com/in/ehsan-mullick"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2.5 rounded-xl bg-[#0077b5] hover:bg-[#006399] text-white font-bold text-xs shadow-md shadow-[#0077b5]/25 flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
+            >
+              <Linkedin className="w-4 h-4 fill-white" />
+              <span>LinkedIn Profile</span>
+            </a>
+
             {/* Email Contact Button */}
             <a
               href="mailto:em.uha.36@gmail.com"
@@ -175,7 +186,7 @@ export default function Footer() {
           <div className="space-y-0.5 text-center sm:text-left">
             <p>© {new Date().getFullYear()} Eventora — IUBAT Opportunity Hub. Engineered for students and organizers.</p>
             <p className="font-bold text-indigo-600">
-              Created by Ehsan Mullick • em.uha.36@gmail.com • 01703186195
+              Created by Ehsan Mullick • em.uha.36@gmail.com • 01703186195 • linkedin.com/in/ehsan-mullick
             </p>
           </div>
           <div className="flex items-center gap-6">

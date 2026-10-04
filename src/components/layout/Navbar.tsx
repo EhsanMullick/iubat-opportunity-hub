@@ -38,22 +38,22 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full px-4 sm:px-8 py-3 transition-all duration-200">
       <nav className="max-w-7xl mx-auto glass-panel rounded-2xl px-4 sm:px-6 py-2.5 flex items-center justify-between shadow-glass">
-        {/* Brand Logo */}
+        {/* Brand Logo & Bold Title */}
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/25 group-hover:scale-105 transition-transform">
-            <GraduationCap className="w-5 h-5" />
+          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-700 to-violet-700 flex items-center justify-center text-white shadow-lg shadow-indigo-600/30 group-hover:scale-105 transition-transform shrink-0">
+            <GraduationCap className="w-6 h-6 stroke-[2.2]" />
           </div>
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 bg-clip-text text-transparent">
+            <div className="flex items-center gap-2">
+              <span className="font-black text-xl sm:text-2xl text-slate-950 tracking-tight leading-none drop-shadow-xs">
+                IUBAT Opportunity Hub
+              </span>
+              <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-indigo-600 text-white shadow-xs">
                 Eventora
               </span>
-              <span className="text-[10px] font-semibold tracking-wider uppercase px-1.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/60">
-                IUBAT HUB
-              </span>
             </div>
-            <p className="text-[11px] font-medium text-slate-500 leading-none">
-              Universal Opportunity & Event Discovery
+            <p className="text-xs font-bold text-indigo-700 leading-tight mt-0.5">
+              Universal Campus & National Opportunity Platform
             </p>
           </div>
         </Link>
