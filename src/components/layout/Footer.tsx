@@ -129,9 +129,14 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom copyright & legal */}
+        {/* Bottom copyright, credit & legal */}
         <div className="mt-12 pt-6 border-t border-slate-200/60 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-          <p>© {new Date().getFullYear()} Eventora — IUBAT Opportunity Hub. Engineered for students and organizers.</p>
+          <div className="space-y-1 text-center sm:text-left">
+            <p>© {new Date().getFullYear()} Eventora — IUBAT Opportunity Hub. Engineered for students and organizers.</p>
+            <p className="font-bold text-indigo-600 tracking-wide">
+              All credit goes to Ehsan Mullick
+            </p>
+          </div>
           <div className="flex items-center gap-6">
             <Link href="/terms" className="hover:text-slate-800 transition-colors">Terms of Service</Link>
             <Link href="/privacy" className="hover:text-slate-800 transition-colors">Privacy Policy</Link>

@@ -200,3 +200,9 @@ Set the `CRON_SECRET` environment variable in your Vercel project settings.
 ## 📜 License & Copyright
 Developed for **IUBAT — International University of Business Agriculture and Technology**, Dhaka, Bangladesh.
 Distributed under the MIT License.
+
+---
+
+## 🏆 Credits
+All credit goes to **Ehsan Mullick**.
+
