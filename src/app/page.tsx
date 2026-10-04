@@ -63,21 +63,23 @@ export default function HomePage() {
       <section className="relative pt-12 sm:pt-20 px-4 sm:px-8">
         <div className="max-w-5xl mx-auto text-center space-y-6">
           {/* IUBAT Campus Tag Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-badge text-xs font-semibold shadow-xs">
-            <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
-            <span>IUBAT Opportunity Hub • Uttara, Dhaka</span>
-            <span className="text-slate-400">|</span>
-            <span className="text-indigo-600 font-bold">Over 10+ Live Programs</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-badge text-xs font-extrabold shadow-sm border border-indigo-300/70 bg-white/90">
+            <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-500 animate-ping" />
+            <span className="text-slate-900">IUBAT Opportunity Hub</span>
+            <span className="text-slate-300">•</span>
+            <span className="text-indigo-600">Uttara, Dhaka</span>
+            <span className="text-slate-300">•</span>
+            <span className="text-emerald-700 font-black">100% Verified Programs</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 leading-[1.15]">
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-950 leading-[1.12]">
             Discover What’s Happening{' '}
-            <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 bg-clip-text text-transparent">
               Around You
             </span>
           </h1>
 
-          <p className="max-w-2xl mx-auto text-base sm:text-lg text-slate-600 leading-relaxed">
+          <p className="max-w-2xl mx-auto text-base sm:text-lg text-slate-700 font-medium leading-relaxed">
             The premier platform connecting university students, innovators, faculty clubs, and tech communities across Bangladesh. Discover hackathons, international conferences, job expos, cultural nights, and track your applications.
           </p>
 
@@ -86,27 +88,27 @@ export default function HomePage() {
             <form
               action="/events"
               method="GET"
-              className="glass-panel p-2.5 rounded-2xl shadow-glass flex flex-col sm:flex-row items-center gap-2 border border-white/80"
+              className="glass-panel p-3 rounded-2xl shadow-glass flex flex-col sm:flex-row items-center gap-2.5 border-2 border-white/90"
             >
               <div className="relative flex-1 w-full">
-                <Search className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-indigo-500" />
                 <input
                   type="text"
                   name="search"
                   placeholder="Search events by title, keyword, or company..."
-                  className="w-full pl-11 pr-4 py-3 rounded-xl bg-transparent text-sm text-slate-900 placeholder-slate-400 focus:outline-none"
+                  className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/90 text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
 
-              <div className="h-8 w-px bg-slate-200/80 hidden sm:block" />
+              <div className="h-8 w-px bg-slate-300 hidden sm:block" />
 
               <div className="relative w-full sm:w-48">
-                <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-indigo-500" />
                 <select
                   name="city"
                   defaultValue="All"
                   aria-label="Filter by city"
-                  className="w-full pl-9 pr-8 py-3 rounded-xl bg-transparent text-sm text-slate-700 focus:outline-none cursor-pointer"
+                  className="w-full pl-9 pr-8 py-3 rounded-xl bg-white/90 text-sm font-bold text-slate-800 focus:outline-none cursor-pointer"
                 >
                   <option value="All">All Cities</option>
                   <option value="Dhaka">Dhaka</option>
@@ -117,7 +119,7 @@ export default function HomePage() {
 
               <button
                 type="submit"
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 shrink-0"
+                className="w-full sm:w-auto px-7 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 shrink-0 hover:scale-[1.02] active:scale-95"
               >
                 <span>Find Events</span>
                 <ArrowRight className="w-4 h-4" />
@@ -126,10 +128,10 @@ export default function HomePage() {
           </div>
 
           {/* Quick CTA Actions */}
-          <div className="flex items-center justify-center gap-3 pt-2 flex-wrap">
+          <div className="flex items-center justify-center gap-3 pt-3 flex-wrap">
             <Link
               href="/events"
-              className="px-6 py-3 rounded-xl text-sm font-bold text-slate-800 glass-panel hover:bg-white/90 transition-all shadow-sm flex items-center gap-2"
+              className="px-6 py-3.5 rounded-xl text-sm font-bold text-slate-900 bg-white/90 hover:bg-white border border-slate-200 transition-all shadow-md flex items-center gap-2 hover:scale-105 active:scale-95"
             >
               <Compass className="w-4 h-4 text-indigo-600" />
               <span>Explore All Events</span>
@@ -137,7 +139,7 @@ export default function HomePage() {
 
             <Link
               href="/ai-advisor"
-              className="px-6 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-all shadow-md shadow-purple-600/20 flex items-center gap-2"
+              className="px-6 py-3.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-all shadow-lg shadow-purple-600/25 flex items-center gap-2 hover:scale-105 active:scale-95"
             >
               <Sparkles className="w-4 h-4" />
               <span>AI Opportunity Matcher</span>
@@ -145,11 +147,27 @@ export default function HomePage() {
 
             <Link
               href="/dashboard/events/new"
-              className="px-6 py-3 rounded-xl text-sm font-bold text-indigo-700 bg-indigo-50/90 hover:bg-indigo-100 transition-all border border-indigo-200/50 flex items-center gap-2"
+              className="px-6 py-3.5 rounded-xl text-sm font-bold text-indigo-700 bg-indigo-50/90 hover:bg-indigo-100 transition-all border border-indigo-200/60 flex items-center gap-2 hover:scale-105 active:scale-95"
             >
               <PlusCircle className="w-4 h-4" />
               <span>Publish an Event</span>
             </Link>
+          </div>
+
+          {/* Eye-catching Live Metric Bar */}
+          <div className="pt-6 flex items-center justify-center gap-6 sm:gap-12 flex-wrap text-slate-700">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm" />
+              <span className="text-xs font-bold">14+ Verified Campus Events</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-sm" />
+              <span className="text-xs font-bold">Default Timezone: Asia/Dhaka</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-purple-500 shadow-sm" />
+              <span className="text-xs font-bold">Auto-Expired Business Rule Active</span>
+            </div>
           </div>
         </div>
       </section>

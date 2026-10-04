@@ -55,19 +55,19 @@ export default function EventCard({ event, onSave, isSaved = false }: EventCardP
   const getCategoryTheme = (cat: string) => {
     switch (cat) {
       case 'Hackathons & Contests':
-        return 'bg-purple-100/90 text-purple-800 border-purple-200';
+        return 'bg-purple-600 text-white border-purple-400 shadow-sm';
       case 'Career & Networking':
-        return 'bg-blue-100/90 text-blue-800 border-blue-200';
+        return 'bg-blue-600 text-white border-blue-400 shadow-sm';
       case 'Seminars & Conferences':
-        return 'bg-emerald-100/90 text-emerald-800 border-emerald-200';
+        return 'bg-emerald-600 text-white border-emerald-400 shadow-sm';
       case 'Concerts & Cultural':
-        return 'bg-amber-100/90 text-amber-800 border-amber-200';
+        return 'bg-amber-600 text-white border-amber-400 shadow-sm';
       case 'Workshops & Training':
-        return 'bg-indigo-100/90 text-indigo-800 border-indigo-200';
+        return 'bg-indigo-600 text-white border-indigo-400 shadow-sm';
       case 'Sports & Fitness':
-        return 'bg-rose-100/90 text-rose-800 border-rose-200';
+        return 'bg-rose-600 text-white border-rose-400 shadow-sm';
       default:
-        return 'bg-slate-100/90 text-slate-800 border-slate-200';
+        return 'bg-slate-700 text-white border-slate-500 shadow-sm';
     }
   };
 

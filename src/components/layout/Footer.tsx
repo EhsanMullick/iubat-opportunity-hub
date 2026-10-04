@@ -129,19 +129,60 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Prominent Creator & Credit Card */}
+        <div className="mt-12 p-6 sm:p-8 rounded-3xl glass-card border-2 border-indigo-200/90 bg-gradient-to-r from-indigo-50/95 via-white/95 to-purple-50/95 shadow-glass flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-1.5 text-center md:text-left">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-black shadow-sm">
+              <Heart className="w-3.5 h-3.5 fill-white text-white" />
+              <span>Creator & Architect</span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+              All credit goes to{' '}
+              <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 bg-clip-text text-transparent">
+                Ehsan Mullick
+              </span>
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-600">
+              For platform inquiries, collaborations, or feature requests:
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 flex-wrap justify-center">
+            {/* Email Contact Button */}
+            <a
+              href="mailto:em.uha.36@gmail.com"
+              className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs border border-slate-200 shadow-sm flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
+            >
+              <Mail className="w-4 h-4 text-indigo-600" />
+              <span>em.uha.36@gmail.com</span>
+            </a>
+
+            {/* WhatsApp Contact Button */}
+            <a
+              href="https://wa.me/8801703186195"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-600/25 flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
+            >
+              <Phone className="w-4 h-4" />
+              <span>WhatsApp: 01703186195</span>
+            </a>
+          </div>
+        </div>
+
         {/* Bottom copyright, credit & legal */}
-        <div className="mt-12 pt-6 border-t border-slate-200/60 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-          <div className="space-y-1 text-center sm:text-left">
+        <div className="mt-8 pt-6 border-t border-slate-200/60 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+          <div className="space-y-0.5 text-center sm:text-left">
             <p>© {new Date().getFullYear()} Eventora — IUBAT Opportunity Hub. Engineered for students and organizers.</p>
-            <p className="font-bold text-indigo-600 tracking-wide">
-              All credit goes to Ehsan Mullick
+            <p className="font-bold text-indigo-600">
+              Created by Ehsan Mullick • em.uha.36@gmail.com • 01703186195
             </p>
           </div>
           <div className="flex items-center gap-6">
             <Link href="/terms" className="hover:text-slate-800 transition-colors">Terms of Service</Link>
             <Link href="/privacy" className="hover:text-slate-800 transition-colors">Privacy Policy</Link>
-            <span className="flex items-center gap-1 text-slate-500">
-              Crafted with <Heart className="w-3 h-3 text-rose-500 fill-rose-500" /> for IUBATians
+            <span className="flex items-center gap-1 text-slate-500 font-medium">
+              Made with <Heart className="w-3 h-3 text-rose-500 fill-rose-500" /> for IUBATians
             </span>
           </div>
         </div>

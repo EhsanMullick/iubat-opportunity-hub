@@ -49,6 +49,7 @@ export default function RootLayout({
         {/* Ambient Frosted Glow Orbs */}
         <div className="glow-blob-1" aria-hidden="true" />
         <div className="glow-blob-2" aria-hidden="true" />
+        <div className="glow-blob-3" aria-hidden="true" />
 
         <Navbar />
         <main className="flex-1 relative z-10">{children}</main>
