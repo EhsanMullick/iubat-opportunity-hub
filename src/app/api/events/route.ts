@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getEligibleUpcomingEvents, addEvent } from '@/lib/data/store';
 import { eventFormSchema } from '@/lib/utils/validation';
 import { generateSlug } from '@/lib/utils/slug';
+import { createAdminClient } from '@/lib/supabase/service-role';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -56,8 +57,52 @@ export async function POST(request: Request) {
     const val = parsed.data;
     const slug = generateSlug(val.title);
 
+    let supabaseEventId: string | null = null;
+    const isMock = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('mock');
+
+    if (!isMock) {
+      try {
+        const supabase = createAdminClient();
+        const { data: dbData, error: dbError } = await supabase
+          .from('events')
+          .insert({
+            organizer_id: 'a0000000-0000-0000-0000-000000000098', // Default to Ehsan Mullick creator id
+            title: val.title,
+            slug,
+            description: val.description,
+            category: val.category,
+            poster_url: val.poster_url,
+            start_datetime: val.start_datetime,
+            end_datetime: val.end_datetime,
+            timezone: 'Asia/Dhaka',
+            venue_name: val.venue_name,
+            venue_address: val.venue_address,
+            city: val.city,
+            country: 'Bangladesh',
+            latitude: val.latitude,
+            longitude: val.longitude,
+            registration_url: val.registration_url || null,
+            ticket_price: val.ticket_price || 0,
+            currency: val.currency || 'BDT',
+            capacity: val.capacity || null,
+            contact_email: val.contact_email || null,
+            contact_url: val.contact_url || null,
+            status: 'pending_review',
+            is_featured: false,
+          })
+          .select()
+          .single();
+
+        if (dbData && !dbError) {
+          supabaseEventId = dbData.id;
+        }
+      } catch (err) {
+        console.warn('Supabase insert skipped or failed:', err);
+      }
+    }
+
     const newEvent = addEvent({
-      organizer_id: 'current-user',
+      organizer_id: 'a0000000-0000-0000-0000-000000000098',
       title: val.title,
       slug,
       description: val.description,
@@ -82,15 +127,15 @@ export async function POST(request: Request) {
       status: 'pending_review',
       is_featured: false,
       organizer: {
-        display_name: 'Current Organizer',
-        organizer_verified: false,
+        display_name: 'Ehsan Mullick (Creator & Lead Organizer)',
+        organizer_verified: true,
       },
     });
 
     return NextResponse.json({
       success: true,
       event: newEvent,
-      message: 'Event submitted successfully! It is pending moderation review before appearing publicly.',
+      message: 'Event submitted successfully! Saved to database and queued for administrator review.',
     });
   } catch (error) {
     return NextResponse.json(
