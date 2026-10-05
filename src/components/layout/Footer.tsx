@@ -89,8 +89,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/admin" className="hover:text-indigo-600 transition-colors">
-                  Admin Moderation Portal
+                <Link href="/login" className="hover:text-indigo-600 transition-colors">
+                  Account Sign In & Registration
                 </Link>
               </li>
             </ul>

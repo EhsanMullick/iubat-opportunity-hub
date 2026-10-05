@@ -58,8 +58,11 @@ export default function LoginPage() {
       if (profile?.role === 'admin' || targetEmail === 'em.uha.362@gmail.com') {
         setSuccess('Welcome Ehsan Mullick! Redirecting to Admin Console...');
         setTimeout(() => router.push('/admin'), 800);
+      } else if (profile?.role === 'organizer') {
+        setSuccess('Organizer sign in successful! Redirecting to dashboard...');
+        setTimeout(() => router.push('/dashboard'), 800);
       } else {
-        setSuccess('Signed in successfully! Redirecting...');
+        setSuccess('Signed in successfully! Redirecting to Student Hub...');
         setTimeout(() => router.push('/student-dashboard'), 800);
       }
     } catch (err) {

@@ -25,31 +25,46 @@ export default function SignupPage() {
     setSuccess(null);
 
     try {
-      const supabase = createClient();
-      const { data, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName,
-            role,
-            student_id: studentId,
-            department,
-          },
+      // 1. Register user via server API into Supabase Auth & PostgreSQL profiles
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          fullName,
+          email: email.trim().toLowerCase(),
+          password,
+          role,
+          studentId,
+          department,
+        }),
       });
 
-      if (authError) {
-        if (process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('mock')) {
-          setSuccess('Account registered successfully! Redirecting...');
-          setTimeout(() => router.push(role === 'organizer' ? '/dashboard' : '/student-dashboard'), 1000);
-          return;
-        }
-        throw authError;
+      const resData = await res.json();
+
+      if (!res.ok) {
+        throw new Error(resData.error || 'Failed to create account');
       }
 
-      setSuccess('Account created! Please check your email inbox to verify your account.');
-      setTimeout(() => router.push('/login'), 2000);
+      setSuccess('Account created successfully! Signing you in...');
+
+      // 2. Automatically sign user in to create client session
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
+      });
+
+      if (signInError) {
+        // Fallback to login page if immediate token fetch has a delay
+        setTimeout(() => router.push('/login'), 1200);
+      } else {
+        // Direct redirect to respective portal
+        setTimeout(() => {
+          router.push(role === 'organizer' ? '/dashboard' : '/student-dashboard');
+        }, 800);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed');
     } finally {
