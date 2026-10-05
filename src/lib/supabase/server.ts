@@ -1,6 +1,10 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
+if (typeof globalThis !== 'undefined' && typeof globalThis.WebSocket === 'undefined') {
+  globalThis.WebSocket = class {} as any;
+}
+
 export function createServerSupabaseClient() {
   const cookieStore = cookies();
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://mock.supabase.co';

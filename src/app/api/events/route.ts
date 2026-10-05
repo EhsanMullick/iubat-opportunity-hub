@@ -17,6 +17,61 @@ export async function GET(request: Request) {
   const page = parseInt(searchParams.get('page') || '1', 10);
   const limit = parseInt(searchParams.get('limit') || '12', 10);
 
+  // If live Supabase is configured, fetch directly from Supabase!
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (supabaseUrl && !supabaseUrl.includes('mock') && supabaseKey && !supabaseKey.includes('mock')) {
+    try {
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(supabaseUrl, supabaseKey, { auth: { persistSession: false } });
+
+      let query = supabase.from('events').select('*', { count: 'exact' });
+
+      // Primary business rule: must be published and not expired
+      query = query.eq('status', 'published').gt('end_datetime', new Date().toISOString());
+
+      if (category && category !== 'All') {
+        query = query.eq('category', category);
+      }
+      if (city) {
+        query = query.ilike('city', `%${city}%`);
+      }
+      if (search) {
+        query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%,venue_name.ilike.%${search}%`);
+      }
+      if (priceType === 'free') {
+        query = query.eq('ticket_price', 0);
+      } else if (priceType === 'paid') {
+        query = query.gt('ticket_price', 0);
+      }
+
+      if (sortBy === 'soonest') {
+        query = query.order('start_datetime', { ascending: true });
+      } else if (sortBy === 'newest') {
+        query = query.order('created_at', { ascending: false });
+      } else if (sortBy === 'popular') {
+        query = query.order('views_count', { ascending: false });
+      }
+
+      const offset = (page - 1) * limit;
+      query = query.range(offset, offset + limit - 1);
+
+      const { data, count, error } = await query;
+      if (!error && data) {
+        return NextResponse.json({
+          success: true,
+          data,
+          total: count ?? data.length,
+          page,
+          limit,
+          source: 'supabase',
+        });
+      }
+    } catch (err) {
+      console.warn('Supabase query fallback to local store:', err);
+    }
+  }
+
   const result = getEligibleUpcomingEvents({
     search,
     category,
@@ -35,6 +90,7 @@ export async function GET(request: Request) {
     total: result.total,
     page,
     limit,
+    source: 'store',
   });
 }
 
