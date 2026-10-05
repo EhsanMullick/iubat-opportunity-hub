@@ -19,13 +19,17 @@ export default function LocationPickerMap({
   const markerRef = useRef<any>(null);
   const [currentCoords, setCurrentCoords] = useState({ lat: latitude, lng: longitude });
 
-  // Common Bangladesh campus and city presets
+  // Common Bangladesh campus and divisional city presets
   const presets = [
     { name: 'IUBAT Uttara Campus', lat: 23.8824, lng: 90.3957 },
-    { name: 'Dhanmondi / BICC', lat: 23.7709, lng: 90.3789 },
-    { name: 'Gulshan / Banani', lat: 23.7937, lng: 90.4066 },
-    { name: 'Chittagong Center', lat: 22.3475, lng: 91.8123 },
+    { name: 'Dhaka Center', lat: 23.8103, lng: 90.4125 },
+    { name: 'Chittagong Center', lat: 22.3569, lng: 91.7832 },
     { name: 'Sylhet Center', lat: 24.8949, lng: 91.8687 },
+    { name: 'Rajshahi Center', lat: 24.3745, lng: 88.6042 },
+    { name: 'Khulna Center', lat: 22.8456, lng: 89.5403 },
+    { name: 'Barisal Center', lat: 22.7010, lng: 90.3535 },
+    { name: 'Rangpur Center', lat: 25.7439, lng: 89.2752 },
+    { name: 'Mymensingh Center', lat: 24.7471, lng: 90.4203 },
   ];
 
   useEffect(() => {

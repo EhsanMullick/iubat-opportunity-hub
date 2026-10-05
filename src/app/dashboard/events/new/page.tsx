@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { eventFormSchema, EventFormValues, EVENT_CATEGORIES } from '@/lib/utils/validation';
+import { BANGLADESH_DIVISIONS, BANGLADESH_DISTRICTS } from '@/lib/data/districts';
 import dynamic from 'next/dynamic';
 
 const LocationPickerMap = dynamic(() => import('@/components/map/LocationPickerMap'), {
@@ -596,14 +597,22 @@ export default function CreateEventPage() {
 
               <div>
                 <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1">
-                  City *
+                  District / City *
                 </label>
-                <input
-                  type="text"
+                <select
                   {...register('city')}
-                  placeholder="Dhaka"
-                  className="w-full px-4 py-3 rounded-xl glass-input text-sm text-slate-900"
-                />
+                  className="w-full px-4 py-3 rounded-xl glass-input text-sm text-slate-900 bg-white font-medium cursor-pointer"
+                >
+                  {BANGLADESH_DIVISIONS.map((division) => (
+                    <optgroup key={division} label={`${division} Division`}>
+                      {BANGLADESH_DISTRICTS.filter((d) => d.division === division).map((district) => (
+                        <option key={district.name} value={district.name}>
+                          {district.name} ({district.bnName})
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </select>
                 {errors.city && (
                   <p className="text-xs text-rose-600 mt-1">{errors.city.message}</p>
                 )}

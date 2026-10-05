@@ -17,6 +17,7 @@ import {
   BrainCircuit,
 } from 'lucide-react';
 import { getEligibleUpcomingEvents } from '@/lib/data/store';
+import { BANGLADESH_DIVISIONS, BANGLADESH_DISTRICTS } from '@/lib/data/districts';
 import EventCard from '@/components/events/EventCard';
 import dynamic from 'next/dynamic';
 
@@ -102,18 +103,24 @@ export default function HomePage() {
 
               <div className="h-8 w-px bg-slate-300 hidden sm:block" />
 
-              <div className="relative w-full sm:w-48">
+              <div className="relative w-full sm:w-56">
                 <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-indigo-500" />
                 <select
                   name="city"
                   defaultValue="All"
-                  aria-label="Filter by city"
+                  aria-label="Filter by district of Bangladesh"
                   className="w-full pl-9 pr-8 py-3 rounded-xl bg-white/90 text-sm font-bold text-slate-800 focus:outline-none cursor-pointer"
                 >
-                  <option value="All">All Cities</option>
-                  <option value="Dhaka">Dhaka</option>
-                  <option value="Chittagong">Chittagong</option>
-                  <option value="Sylhet">Sylhet</option>
+                  <option value="All">All 64 Districts</option>
+                  {BANGLADESH_DIVISIONS.map((division) => (
+                    <optgroup key={division} label={`${division} Division`}>
+                      {BANGLADESH_DISTRICTS.filter((d) => d.division === division).map((district) => (
+                        <option key={district.name} value={district.name}>
+                          {district.name} ({district.bnName})
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
                 </select>
               </div>
 

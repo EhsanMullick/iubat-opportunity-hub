@@ -19,6 +19,7 @@ import {
 import { EventItem, EventCategory } from '@/types';
 import EventCard from '@/components/events/EventCard';
 import { EVENT_CATEGORIES } from '@/lib/utils/validation';
+import { BANGLADESH_DIVISIONS, BANGLADESH_DISTRICTS } from '@/lib/data/districts';
 
 export default function ExploreEventsPage() {
   return (
@@ -329,17 +330,23 @@ function ExploreEventsContent() {
           {/* City Dropdown */}
           <div className="relative">
             <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-              City / Location
+              District / Location
             </label>
             <select
               value={city}
               onChange={(e) => setCity(e.target.value)}
               className="w-full px-3 py-2 rounded-xl glass-input text-xs font-medium text-slate-800 cursor-pointer"
             >
-              <option value="All">All Cities</option>
-              <option value="Dhaka">Dhaka (Including IUBAT)</option>
-              <option value="Chittagong">Chittagong</option>
-              <option value="Sylhet">Sylhet</option>
+              <option value="All">All 64 Districts</option>
+              {BANGLADESH_DIVISIONS.map((division) => (
+                <optgroup key={division} label={`${division} Division`}>
+                  {BANGLADESH_DISTRICTS.filter((d) => d.division === division).map((district) => (
+                    <option key={district.name} value={district.name}>
+                      {district.name} ({district.bnName})
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
             </select>
           </div>
 
