@@ -195,23 +195,6 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 text-xs text-slate-300 space-y-2">
-          <p className="font-bold text-white flex items-center gap-2 text-sm">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <span>How Creator Admin Access Works After Publishing:</span>
-          </p>
-          <ul className="list-disc list-inside space-y-1 text-slate-300">
-            <li>
-              <strong>Direct URL:</strong> Navigate to <code className="text-indigo-300 bg-white/10 px-1.5 py-0.5 rounded">https://your-domain.vercel.app/admin</code> or click <strong>Admin</strong> in the top navigation bar.
-            </li>
-            <li>
-              <strong>Automatic Master Admin Provisioning:</strong> In the Supabase database triggers, your email (<strong className="text-white">em.uha.36@gmail.com</strong>) is configured to automatically receive the <code className="text-amber-300">admin</code> role and verified organizer status.
-            </li>
-            <li>
-              <strong>Security & Protection:</strong> Row Level Security (RLS) ensures that unauthorized visitors or general students cannot approve/reject events, toggle featured events, or run admin jobs.
-            </li>
-          </ul>
-        </div>
       </div>
 
       {/* Metrics Row */}

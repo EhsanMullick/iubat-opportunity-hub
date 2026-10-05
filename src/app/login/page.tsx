@@ -22,23 +22,46 @@ export default function LoginPage() {
 
     try {
       const supabase = createClient();
+      let targetEmail = email.trim().toLowerCase();
+
+      // Normalize admin email variants
+      if (
+        targetEmail === 'em.uha.362gmail.com' ||
+        targetEmail === 'em.uha.36@gmail.com' ||
+        targetEmail === 'em.uha.362@gmail.com'
+      ) {
+        targetEmail = 'em.uha.362@gmail.com';
+      }
+
       const { data, error: authError } = await supabase.auth.signInWithPassword({
-        email,
+        email: targetEmail,
         password,
       });
 
       if (authError) {
         // If Supabase mock URL in dev mode, provide smooth mock login fallback!
         if (process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('mock')) {
-          setSuccess('Demo Sign In successful! Redirecting to student hub...');
-          setTimeout(() => router.push('/student-dashboard'), 1000);
+          setSuccess('Demo Sign In successful! Redirecting...');
+          setTimeout(() => router.push('/student-dashboard'), 800);
           return;
         }
         throw authError;
       }
 
-      setSuccess('Signed in successfully! Redirecting...');
-      setTimeout(() => router.push('/student-dashboard'), 1000);
+      // Check user role
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .single();
+
+      if (profile?.role === 'admin' || targetEmail === 'em.uha.362@gmail.com') {
+        setSuccess('Welcome Ehsan Mullick! Redirecting to Admin Console...');
+        setTimeout(() => router.push('/admin'), 800);
+      } else {
+        setSuccess('Signed in successfully! Redirecting...');
+        setTimeout(() => router.push('/student-dashboard'), 800);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Invalid credentials');
     } finally {
@@ -85,7 +108,8 @@ export default function LoginPage() {
             <div className="relative">
               <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
-                type="email"
+                type="text"
+                inputMode="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -130,26 +154,6 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* Quick Creator / Admin Access */}
-        <div className="pt-2">
-          <button
-            type="button"
-            onClick={() => {
-              setEmail('em.uha.36@gmail.com');
-              setPassword('admin-creator-pass');
-              setSuccess('Creator identity detected (Ehsan Mullick)! Redirecting to Admin Console...');
-              setTimeout(() => router.push('/admin'), 900);
-            }}
-            className="w-full py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm"
-          >
-            <span>👑 Creator Quick Access (Ehsan Mullick / em.uha.36@gmail.com)</span>
-          </button>
-        </div>
-
-        {/* Fast Demo Mode Notice */}
-        <div className="p-3 rounded-xl bg-indigo-50/60 border border-indigo-100 text-[11px] text-indigo-900 leading-normal text-center">
-          💡 <strong>Production & Demo Authentication:</strong> As creator, you can log in with your email <code>em.uha.36@gmail.com</code> to access the full <strong>Admin Console</strong>. Normal students and organizers access the Student Hub and Event Publishing tools.
-        </div>
 
         {/* Signup Redirect */}
         <div className="text-center text-xs text-slate-500 pt-2 border-t border-slate-100">
