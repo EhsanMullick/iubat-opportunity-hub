@@ -3,7 +3,7 @@
 > **Universal Event & Opportunity Discovery Platform with Frosted Glass (Glassmorphism) UI/UX, Built for IUBAT Students, Organizers, and Communities across Bangladesh.**
 
 ---
-
+web link : https://iubat-opportunity-hub.vercel.app/
 ## 🌟 Overview & Product Vision
 
 **Eventora — IUBAT Opportunity Hub** is a full-stack, production-grade web application engineered to bridge the gap between academic learning and real-world opportunities. It empowers university students, student clubs (CSE Club, Robotics Club, Business Society, Cultural Club, Sports Club), faculty departments, tech communities, and external companies across Bangladesh to publish and discover upcoming events.
