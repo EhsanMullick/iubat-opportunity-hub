@@ -7,11 +7,10 @@ import {
   Calendar,
   MapPin,
   Sparkles,
-  Bookmark,
-  Check,
   Building2,
   Clock,
   ArrowUpRight,
+  Star,
 } from 'lucide-react';
 import { EventItem } from '@/types';
 import { formatEventDateTime, isEventExpired, isEventLive } from '@/lib/utils/date';
@@ -39,7 +38,7 @@ export default function EventCard({ event, onSave, isSaved = false }: EventCardP
       const res = await fetch('/api/student/saves', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ eventId: event.id, status: 'saved' }),
+        body: JSON.stringify({ eventId: event.id, status: 'interested' }),
       });
       if (res.ok) {
         setSaved(true);
@@ -105,17 +104,18 @@ export default function EventCard({ event, onSave, isSaved = false }: EventCardP
             )}
           </div>
 
-          {/* Quick Save Bookmark Button */}
+          {/* Quick Interested Button */}
           <button
             onClick={handleQuickSave}
-            title={saved ? 'Saved in Student Hub' : 'Save opportunity'}
-            className={`pointer-events-auto p-2 rounded-xl backdrop-blur-md transition-all active:scale-90 ${
+            title={saved ? 'Marked Interested in Student Hub' : 'Mark Interested'}
+            aria-label={saved ? 'Marked Interested in Student Hub' : 'Mark Interested'}
+            className={`pointer-events-auto p-2 rounded-xl backdrop-blur-md transition-all active:scale-90 flex items-center justify-center ${
               saved
-                ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/25'
-                : 'bg-white/80 hover:bg-white text-slate-700 shadow-sm'
+                ? 'bg-amber-500 text-white shadow-md shadow-amber-500/25 ring-2 ring-amber-300'
+                : 'bg-white/80 hover:bg-white text-slate-700 hover:text-amber-600 shadow-sm'
             }`}
           >
-            {saved ? <Check className="w-4 h-4 stroke-[3]" /> : <Bookmark className="w-4 h-4" />}
+            <Star className={`w-4 h-4 ${saved ? 'fill-white stroke-white' : ''}`} />
           </button>
         </div>
 

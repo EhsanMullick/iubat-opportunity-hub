@@ -18,7 +18,11 @@ export type EventStatus =
 
 export type UserRole = 'user' | 'organizer' | 'admin';
 
+export type AttendanceStatus = 'interested' | 'going';
+
 export type ApplicationStatus =
+  | 'interested'
+  | 'going'
   | 'saved'
   | 'applied'
   | 'interviewing'

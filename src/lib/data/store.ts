@@ -193,10 +193,12 @@ export function getStudentSaves(userId: string = 'current-student'): EventSaveIt
 export function saveOpportunity(
   eventId: string,
   userId: string = 'current-student',
-  initialStatus: ApplicationStatus = 'saved'
+  initialStatus: ApplicationStatus = 'interested'
 ): EventSaveItem {
   const existing = inMemorySaves.find((s) => s.user_id === userId && s.event_id === eventId);
   if (existing) {
+    existing.status = initialStatus;
+    existing.updated_at = new Date().toISOString();
     return existing;
   }
 

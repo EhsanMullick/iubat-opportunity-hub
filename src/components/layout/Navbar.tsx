@@ -122,17 +122,10 @@ export default function Navbar() {
     }
   };
 
-  // Public navigation links - ADMIN IS EXCLUDED from public navbar
-  const navLinks = [
+  // Public base navigation links - Student Hub is ONLY visible when user is logged in
+  const baseLinks = [
     { href: '/events', label: 'Explore Events', icon: Compass },
     { href: '/map', label: 'Map Discovery', icon: MapPin },
-    {
-      href: '/student-dashboard',
-      label: 'Student Hub',
-      icon: BookmarkCheck,
-      badge: 'Tracker',
-      badgeColor: 'bg-emerald-100 text-emerald-800',
-    },
     {
       href: '/ai-advisor',
       label: 'AI Advisor',
@@ -142,6 +135,27 @@ export default function Navbar() {
     },
     { href: '/dashboard', label: 'Organizer', icon: Calendar },
   ];
+
+  // If user is logged in, include Student Hub (Interested & Going)
+  const navLinks = currentUser
+    ? [
+        { href: '/events', label: 'Explore Events', icon: Compass },
+        { href: '/map', label: 'Map Discovery', icon: MapPin },
+        {
+          href: '/student-dashboard',
+          label: 'Student Hub',
+          icon: BookmarkCheck,
+        },
+        {
+          href: '/ai-advisor',
+          label: 'AI Advisor',
+          icon: Sparkles,
+          badge: 'AI',
+          badgeColor: 'bg-purple-100 text-purple-800',
+        },
+        { href: '/dashboard', label: 'Organizer', icon: Calendar },
+      ]
+    : baseLinks;
 
   const isActive = (path: string) => {
     if (path === '/' && pathname === '/') return true;

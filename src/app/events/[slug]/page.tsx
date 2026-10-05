@@ -22,6 +22,7 @@ import { formatEventDateTime, formatEventRange, isEventExpired } from '@/lib/uti
 import EventCard from '@/components/events/EventCard';
 import dynamic from 'next/dynamic';
 import ShareButtons from './ShareButtons';
+import EventAttendanceActions from '@/components/events/EventAttendanceActions';
 
 const LeafletMap = dynamic(() => import('@/components/map/LeafletMap'), {
   ssr: false,
@@ -233,6 +234,9 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
 
               {/* Social Share & Copy Link Client Component */}
               <ShareButtons title={event.title} />
+
+              {/* Student Attendance Actions: Interested & Going */}
+              <EventAttendanceActions eventId={event.id} />
             </div>
           </div>
         </div>
