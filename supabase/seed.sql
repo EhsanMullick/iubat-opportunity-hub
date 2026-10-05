@@ -7,6 +7,21 @@
 -- - 1 pending moderation event ('National AI in Medicine Poster Showcase')
 -- ==============================================================================
 
+-- 0. Insert matching dummy auth accounts into auth.users to satisfy foreign key constraints
+INSERT INTO auth.users (id, instance_id, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, role, aud)
+VALUES 
+    ('a0000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000000', 'cse.club@iubat.edu', '', now(), '{"provider":"email","providers":["email"]}', '{"full_name":"IUBAT Computer Society"}', now(), now(), 'authenticated', 'authenticated'),
+    ('a0000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000000', 'talent@bttn.org', '', now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Bangladesh Tech Talent Network"}', now(), now(), 'authenticated', 'authenticated'),
+    ('a0000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000000', 'agri@iubat.edu', '', now(), '{"provider":"email","providers":["email"]}', '{"full_name":"IUBAT Faculty of Agricultural Sciences"}', now(), now(), 'authenticated', 'authenticated'),
+    ('a0000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000000', 'bengal.culture@dhaka.org', '', now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Bengal Cultural Society"}', now(), now(), 'authenticated', 'authenticated'),
+    ('a0000000-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000000', 'robotics@iubat.edu', '', now(), '{"provider":"email","providers":["email"]}', '{"full_name":"IUBAT Robotics Club"}', now(), now(), 'authenticated', 'authenticated'),
+    ('a0000000-0000-0000-0000-000000000006', '00000000-0000-0000-0000-000000000000', 'sports@iubat.edu', '', now(), '{"provider":"email","providers":["email"]}', '{"full_name":"IUBAT Sports Club"}', now(), now(), 'authenticated', 'authenticated'),
+    ('a0000000-0000-0000-0000-000000000007', '00000000-0000-0000-0000-000000000000', 'business@iubat.edu', '', now(), '{"provider":"email","providers":["email"]}', '{"full_name":"IUBAT Business Society"}', now(), now(), 'authenticated', 'authenticated'),
+    ('a0000000-0000-0000-0000-000000000008', '00000000-0000-0000-0000-000000000000', 'tourism@iubat.edu', '', now(), '{"provider":"email","providers":["email"]}', '{"full_name":"IUBAT Tourism & Hospitality Club"}', now(), now(), 'authenticated', 'authenticated'),
+    ('a0000000-0000-0000-0000-000000000098', '00000000-0000-0000-0000-000000000000', 'em.uha.36@gmail.com', '', now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Ehsan Mullick"}', now(), now(), 'authenticated', 'authenticated'),
+    ('a0000000-0000-0000-0000-000000000099', '00000000-0000-0000-0000-000000000000', 'admin@eventora.app', '', now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Admin Moderator"}', now(), now(), 'authenticated', 'authenticated')
+ON CONFLICT (id) DO NOTHING;
+
 -- 1. Insert Demo Profiles
 INSERT INTO public.profiles (id, display_name, role, organizer_verified, department)
 VALUES 
