@@ -26,7 +26,16 @@ export const eventFormSchema = z
     }),
     poster_url: z
       .string()
-      .url({ message: 'Please provide a valid image URL for the event poster' }),
+      .min(5, { message: 'Please upload a poster image or provide an image link' })
+      .refine(
+        (val) =>
+          val.startsWith('http://') ||
+          val.startsWith('https://') ||
+          val.startsWith('data:image/') ||
+          val.startsWith('/') ||
+          val.startsWith('blob:'),
+        { message: 'Poster must be a valid image URL or uploaded image file' }
+      ),
     start_datetime: z
       .string()
       .min(1, { message: 'Start date and time is required' })

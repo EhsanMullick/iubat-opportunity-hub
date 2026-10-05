@@ -17,7 +17,13 @@ import {
   Sparkles,
   ArrowLeft,
   Loader2,
+  UploadCloud,
+  Trash2,
+  Eye,
+  Compass,
+  FileImage,
 } from 'lucide-react';
+import Link from 'next/link';
 import { eventFormSchema, EventFormValues, EVENT_CATEGORIES } from '@/lib/utils/validation';
 import dynamic from 'next/dynamic';
 
@@ -35,6 +41,13 @@ export default function CreateEventPage() {
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [createdEvent, setCreatedEvent] = useState<any | null>(null);
+
+  // Poster Tab selection: 'upload' (local file), 'url' (web link), 'preset'
+  const [posterTab, setPosterTab] = useState<'upload' | 'url' | 'preset'>('upload');
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [uploadedFileSize, setUploadedFileSize] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   // Pre-configured high-quality posters for quick selection
   const posterPresets = [
@@ -78,6 +91,41 @@ export default function CreateEventPage() {
   const lat = watch('latitude');
   const lng = watch('longitude');
 
+  const handleFileUpload = (file: File) => {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setServerError('Please select a valid image file (PNG, JPG, JPEG, WEBP).');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setServerError('File size exceeds 5MB limit. Please select an image under 5MB.');
+      return;
+    }
+    setUploadedFileName(file.name);
+    setUploadedFileSize((file.size / 1024).toFixed(1) + ' KB');
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      setValue('poster_url', dataUrl, { shouldValidate: true, shouldDirty: true });
+      setServerError(null);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileUpload(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setValue('poster_url', '', { shouldValidate: true });
+    setUploadedFileName(null);
+    setUploadedFileSize(null);
+  };
+
   const onSubmit = async (values: EventFormValues) => {
     setSubmitting(true);
     setServerError(null);
@@ -85,7 +133,7 @@ export default function CreateEventPage() {
       const res = await fetch('/api/events', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
+        body: JSON.stringify({ ...values, status: 'published' }),
       });
 
       const data = await res.json();
@@ -93,16 +141,106 @@ export default function CreateEventPage() {
         throw new Error(data.error || 'Failed to submit event');
       }
 
-      setSuccessMessage(data.message || 'Event submitted successfully!');
-      setTimeout(() => {
-        router.push('/dashboard');
-      }, 2000);
+      setCreatedEvent(data.event);
+      setSuccessMessage(data.message || 'Event published successfully! It is now live across the platform.');
     } catch (err) {
       setServerError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setSubmitting(false);
     }
   };
+
+  // Celebration & Direct Navigation Screen once Event is Created
+  if (createdEvent) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 sm:px-8 py-16">
+        <div className="glass-panel rounded-3xl p-8 sm:p-12 shadow-glass border-2 border-emerald-300 bg-white/95 text-center space-y-6 animate-in fade-in zoom-in-95 duration-300">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-500 text-white flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/30">
+            <CheckCircle2 className="w-10 h-10" />
+          </div>
+
+          <div className="space-y-2">
+            <span className="text-xs font-black uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+              ⚡ Live On Website Now
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
+              Event Published Successfully!
+            </h1>
+            <p className="text-sm text-slate-600 max-w-lg mx-auto">
+              Your opportunity <strong className="text-slate-900">&quot;{createdEvent.title}&quot;</strong> is immediately live and visible on the Homepage, Explore Events catalog, and Interactive Map.
+            </p>
+          </div>
+
+          {/* Event Preview Card */}
+          <div className="max-w-md mx-auto rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 text-left p-4 flex items-center gap-4 shadow-sm">
+            <div className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-slate-200">
+              <img
+                src={createdEvent.poster_url}
+                alt={createdEvent.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="min-w-0 space-y-1">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800">
+                {createdEvent.category}
+              </span>
+              <h3 className="font-bold text-sm text-slate-900 truncate">
+                {createdEvent.title}
+              </h3>
+              <p className="text-xs text-slate-500">
+                📍 {createdEvent.venue_name}, {createdEvent.city}
+              </p>
+            </div>
+          </div>
+
+          {/* Action Links */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <Link
+              href={`/events/${createdEvent.slug}`}
+              className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md shadow-indigo-600/25 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95"
+            >
+              <Eye className="w-4 h-4" />
+              <span>View Live Event Page</span>
+            </Link>
+
+            <Link
+              href="/events"
+              className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 shadow-sm"
+            >
+              <Compass className="w-4 h-4" />
+              <span>See in Explore Events</span>
+            </Link>
+
+            <Link
+              href="/map"
+              className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm border border-slate-200 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 shadow-sm"
+            >
+              <MapPin className="w-4 h-4 text-rose-500" />
+              <span>Locate on Map</span>
+            </Link>
+          </div>
+
+          <div className="pt-4 border-t border-slate-100 flex items-center justify-center gap-4 text-xs">
+            <button
+              type="button"
+              onClick={() => {
+                setCreatedEvent(null);
+                setSuccessMessage(null);
+                setUploadedFileName(null);
+              }}
+              className="font-bold text-indigo-600 hover:underline"
+            >
+              + Publish Another Event
+            </button>
+            <span className="text-slate-300">•</span>
+            <Link href="/dashboard" className="font-bold text-slate-600 hover:underline">
+              Organizer Dashboard
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-8 py-10 space-y-8">
@@ -237,48 +375,191 @@ export default function CreateEventPage() {
 
         {/* Poster & Visuals */}
         <div className="glass-panel rounded-3xl p-6 sm:p-8 shadow-glass border border-white/80 space-y-6">
-          <h2 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">
-            3. Poster Image
-          </h2>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">
+                3. Poster Image
+              </h2>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Upload a poster directly from your computer/phone, or provide an image link.
+              </p>
+            </div>
+
+            {/* Source Switcher Tabs */}
+            <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 self-start sm:self-auto">
+              <button
+                type="button"
+                onClick={() => setPosterTab('upload')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  posterTab === 'upload'
+                    ? 'bg-white text-indigo-700 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <UploadCloud className="w-3.5 h-3.5" />
+                <span>Upload Device</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setPosterTab('url')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  posterTab === 'url'
+                    ? 'bg-white text-indigo-700 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <LinkIcon className="w-3.5 h-3.5" />
+                <span>Image Link</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setPosterTab('preset')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  posterTab === 'preset'
+                    ? 'bg-white text-indigo-700 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Presets</span>
+              </button>
+            </div>
+          </div>
 
           <div className="space-y-4">
-            <div>
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1">
-                Poster Image URL *
-              </label>
-              <input
-                type="url"
-                {...register('poster_url')}
-                placeholder="https://images.unsplash.com/..."
-                className="w-full px-4 py-3 rounded-xl glass-input text-sm text-slate-900"
-              />
-              {errors.poster_url && (
-                <p className="text-xs text-rose-600 mt-1">{errors.poster_url.message}</p>
-              )}
-            </div>
-
-            {/* Quick Presets */}
-            <div className="space-y-2">
-              <span className="text-xs font-semibold text-slate-500">Or pick a curated banner:</span>
-              <div className="flex items-center gap-2 flex-wrap">
-                {posterPresets.map((p) => (
-                  <button
-                    key={p.label}
-                    type="button"
-                    onClick={() => setValue('poster_url', p.url)}
-                    className="text-xs px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium border border-indigo-200/50"
+            {/* Tab 1: Local Device Upload */}
+            {posterTab === 'upload' && (
+              <div className="space-y-3">
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDragging(true);
+                  }}
+                  onDragLeave={() => setIsDragging(false)}
+                  onDrop={handleDrop}
+                  className={`border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center transition-all ${
+                    isDragging
+                      ? 'border-indigo-500 bg-indigo-50/50 scale-[1.01]'
+                      : 'border-slate-300 hover:border-indigo-400 bg-slate-50/50 hover:bg-white'
+                  }`}
+                >
+                  <input
+                    type="file"
+                    id="localPosterUpload"
+                    accept="image/png, image/jpeg, image/jpg, image/webp"
+                    className="hidden"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        handleFileUpload(e.target.files[0]);
+                      }
+                    }}
+                  />
+                  <label
+                    htmlFor="localPosterUpload"
+                    className="cursor-pointer flex flex-col items-center justify-center space-y-3"
                   >
-                    {p.label}
-                  </button>
-                ))}
-              </div>
-            </div>
+                    <div className="w-14 h-14 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center shadow-xs">
+                      <UploadCloud className="w-7 h-7" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-bold text-slate-800">
+                        Click to choose poster from your local device or drag & drop here
+                      </p>
+                      <p className="text-xs text-slate-500">
+                        Supports PNG, JPG, JPEG, WEBP from your computer or phone (Max 5MB)
+                      </p>
+                    </div>
+                    <span className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition-all inline-flex items-center gap-1.5">
+                      <FileImage className="w-4 h-4" />
+                      <span>Browse Image File</span>
+                    </span>
+                  </label>
+                </div>
 
-            {/* Poster Preview */}
+                {uploadedFileName && (
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-semibold">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span className="truncate">{uploadedFileName}</span>
+                      <span className="text-emerald-600 shrink-0">({uploadedFileSize})</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="text-rose-600 hover:text-rose-800 flex items-center gap-1 shrink-0 ml-2"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Remove</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Tab 2: URL Input */}
+            {posterTab === 'url' && (
+              <div>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-1">
+                  Poster Image URL
+                </label>
+                <div className="relative">
+                  <LinkIcon className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="url"
+                    {...register('poster_url')}
+                    placeholder="https://images.unsplash.com/..."
+                    className="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-sm text-slate-900"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Tab 3: Presets */}
+            {posterTab === 'preset' && (
+              <div className="space-y-2">
+                <span className="text-xs font-semibold text-slate-500">Choose from curated event categories:</span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {posterPresets.map((p) => (
+                    <button
+                      key={p.label}
+                      type="button"
+                      onClick={() => {
+                        setValue('poster_url', p.url, { shouldValidate: true, shouldDirty: true });
+                        setUploadedFileName(null);
+                      }}
+                      className="text-xs px-3 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold border border-indigo-200/50 transition-all flex items-center gap-1.5"
+                    >
+                      <span>{p.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {errors.poster_url && (
+              <p className="text-xs text-rose-600 mt-1 font-semibold flex items-center gap-1">
+                <AlertCircle className="w-3.5 h-3.5" />
+                <span>{errors.poster_url.message}</span>
+              </p>
+            )}
+
+            {/* Poster Live Preview */}
             {currentPoster && (
-              <div className="pt-2">
-                <span className="text-xs font-semibold text-slate-500 block mb-2">Live Preview:</span>
-                <div className="relative aspect-[16/9] max-w-sm rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100">
+              <div className="pt-2 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    Poster Live Preview:
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Clear Image</span>
+                  </button>
+                </div>
+                <div className="relative aspect-[16/9] max-w-md rounded-2xl overflow-hidden border-2 border-indigo-100 shadow-md bg-slate-100">
                   <img
                     src={currentPoster}
                     alt="Preview poster"

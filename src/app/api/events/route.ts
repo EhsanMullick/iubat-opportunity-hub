@@ -87,7 +87,7 @@ export async function POST(request: Request) {
             capacity: val.capacity || null,
             contact_email: val.contact_email || null,
             contact_url: val.contact_url || null,
-            status: 'pending_review',
+            status: json.status || 'published',
             is_featured: false,
           })
           .select()
@@ -100,6 +100,8 @@ export async function POST(request: Request) {
         console.warn('Supabase insert skipped or failed:', err);
       }
     }
+
+    const eventStatus = json.status || 'published';
 
     const newEvent = addEvent({
       organizer_id: 'a0000000-0000-0000-0000-000000000098',
@@ -123,8 +125,7 @@ export async function POST(request: Request) {
       capacity: val.capacity || undefined,
       contact_email: val.contact_email || undefined,
       contact_url: val.contact_url || undefined,
-      // Default to pending_review for moderation safety!
-      status: 'pending_review',
+      status: eventStatus,
       is_featured: false,
       organizer: {
         display_name: 'Ehsan Mullick (Creator & Lead Organizer)',
@@ -135,7 +136,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       event: newEvent,
-      message: 'Event submitted successfully! Saved to database and queued for administrator review.',
+      message: 'Event published successfully! It is now live across the homepage, explore events, and interactive map.',
     });
   } catch (error) {
     return NextResponse.json(
