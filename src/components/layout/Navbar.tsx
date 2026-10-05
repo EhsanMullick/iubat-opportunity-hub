@@ -228,14 +228,6 @@ export default function Navbar() {
 
         {/* Right Actions: Clean Organization with proper spacing, Publish Event, Sign In, and Sign Up */}
         <div className="hidden sm:flex items-center gap-2.5 shrink-0">
-          {/* Live Expiration Engine Pill */}
-          <div
-            title="Events that pass their end date and time are automatically removed from discovery."
-            className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-bold border border-emerald-200/80 shadow-xs"
-          >
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Auto-Expiry: Active</span>
-          </div>
 
           {/* Publish Event Primary Action */}
           <Link
@@ -346,11 +338,6 @@ export default function Navbar() {
               </Link>
             )}
 
-            {/* Mobile Auto-Expiry Status Notice */}
-            <div className="mt-2 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-2 text-xs font-bold text-emerald-800">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>Real-time Expiration Engine Active: Expired events are automatically excluded.</span>
-            </div>
 
             {/* Mobile Action Buttons */}
             <div className="pt-3 mt-2 border-t border-slate-200/60 flex flex-col gap-2">

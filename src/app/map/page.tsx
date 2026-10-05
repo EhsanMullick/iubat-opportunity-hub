@@ -18,6 +18,7 @@ import {
 import { EventItem } from '@/types';
 import { EVENT_CATEGORIES } from '@/lib/utils/validation';
 import { formatEventDateTime } from '@/lib/utils/date';
+import { BANGLADESH_DIVISIONS, BANGLADESH_DISTRICTS } from '@/lib/data/districts';
 
 // Dynamic import for LeafletMap
 const LeafletMap = dynamic(() => import('@/components/map/LeafletMap'), {
@@ -33,6 +34,7 @@ export default function DedicatedMapPage() {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [selectedEventId, setSelectedEventId] = useState<string | undefined>();
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [selectedDistrict, setSelectedDistrict] = useState<string>('All');
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map'); // for mobile toggle
   const [loading, setLoading] = useState(true);
@@ -43,6 +45,7 @@ export default function DedicatedMapPage() {
       try {
         const params = new URLSearchParams();
         if (selectedCategory !== 'All') params.set('category', selectedCategory);
+        if (selectedDistrict !== 'All') params.set('city', selectedDistrict);
         if (selectedDate) params.set('startDate', selectedDate);
         params.set('limit', '50');
 
@@ -58,7 +61,7 @@ export default function DedicatedMapPage() {
       }
     }
     loadEvents();
-  }, [selectedCategory, selectedDate]);
+  }, [selectedCategory, selectedDistrict, selectedDate]);
 
   const selectedEvent = events.find((e) => e.id === selectedEventId);
 
@@ -74,12 +77,30 @@ export default function DedicatedMapPage() {
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-            Synchronized geographic discovery of verified upcoming events across Dhaka and Bangladesh
+            Synchronized geographic discovery of verified upcoming events across all 64 districts of Bangladesh
           </p>
         </div>
 
         {/* Filter Controls & Mobile Toggle */}
         <div className="flex items-center gap-2 flex-wrap">
+          {/* District Filter */}
+          <select
+            value={selectedDistrict}
+            onChange={(e) => setSelectedDistrict(e.target.value)}
+            className="px-3 py-2 rounded-xl glass-input text-xs font-semibold text-slate-800 cursor-pointer"
+          >
+            <option value="All">All 64 Districts</option>
+            {BANGLADESH_DIVISIONS.map((division) => (
+              <optgroup key={division} label={`${division} Division`}>
+                {BANGLADESH_DISTRICTS.filter((d) => d.division === division).map((district) => (
+                  <option key={district.name} value={district.name}>
+                    {district.name} ({district.bnName})
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+
           {/* Category Filter */}
           <select
             value={selectedCategory}
