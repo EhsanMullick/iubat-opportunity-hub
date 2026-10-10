@@ -204,7 +204,7 @@ Distributed under the MIT License.
 ---
 
 ## 🏆 Credits
-All credit goes to **Ehsan Mullick**.
+All credit goes to **Ehsan Mullick**..
 - **Email**: [em.uha.36@gmail.com](mailto:em.uha.36@gmail.com)
 - **WhatsApp**: [+8801703186195](https://wa.me/8801703186195) (01703186195)
 - **LinkedIn**: [linkedin.com/in/ehsan-mullick](https://www.linkedin.com/in/ehsan-mullick)
